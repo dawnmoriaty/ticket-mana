@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
 
         return ResponseEntity.badRequest().body(
-            ApiResponse.error(HttpStatus.BAD_REQUEST, "Validation failed", errors)
+                ApiResponse.error(HttpStatus.BAD_REQUEST, "Validation failed", errors)
         );
     }
 
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
 
         return ResponseEntity.badRequest().body(
-            ApiResponse.error(HttpStatus.BAD_REQUEST, "Validation constraints violated", errors)
+                ApiResponse.error(HttpStatus.BAD_REQUEST, "Validation constraints violated", errors)
         );
     }
 
@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleMissingParameter(MissingServletRequestParameterException ex) {
         log.error("Missing parameter: {}", ex.getMessage());
         return ResponseEntity.badRequest().body(
-            ApiResponse.badRequest("Missing required parameter: " + ex.getParameterName())
+                ApiResponse.badRequest("Missing required parameter: " + ex.getParameterName())
         );
     }
 
@@ -80,7 +80,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleMaxUploadSize(MaxUploadSizeExceededException ex) {
         log.error("File size exceeded: {}", ex.getMessage());
         return ResponseEntity.badRequest().body(
-            ApiResponse.badRequest("File size exceeds maximum allowed size")
+                ApiResponse.badRequest("File size exceeds maximum allowed size")
         );
     }
 
@@ -88,7 +88,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleAccessDenied(AccessDeniedException ex) {
         log.error("Access denied: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-            ApiResponse.error(HttpStatus.FORBIDDEN, "Access denied")
+                ApiResponse.error(HttpStatus.FORBIDDEN, "Access denied")
         );
     }
 
@@ -96,7 +96,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleNotFound(NoHandlerFoundException ex) {
         log.error("Handler not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-            ApiResponse.notFound("Endpoint not found: " + ex.getRequestURL())
+                ApiResponse.notFound("Endpoint not found: " + ex.getRequestURL())
         );
     }
 
@@ -104,7 +104,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleRuntimeException(RuntimeException ex) {
         log.error("Runtime exception: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-            ApiResponse.internalServerError("An unexpected error occurred")
+                ApiResponse.internalServerError("An unexpected error occurred")
         );
     }
 
@@ -112,7 +112,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleGenericException(Exception ex) {
         log.error("Unexpected exception: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-            ApiResponse.internalServerError("An unexpected error occurred")
+                ApiResponse.internalServerError("An unexpected error occurred")
         );
     }
 }

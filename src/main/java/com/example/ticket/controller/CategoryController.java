@@ -3,6 +3,9 @@ package com.example.ticket.controller;
 import com.example.ticket.dto.rep.ApiResponse;
 import com.example.ticket.model.Category;
 import com.example.ticket.service.impl.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,71 +17,59 @@ import java.util.List;
 @RequestMapping("/api/v1/categories")
 @RequiredArgsConstructor
 @CrossOrigin("*")
+@Tag(name = "Category Management", description = "APIs for managing movie categories")
 public class CategoryController {
     private final CategoryService categoryService;
-    @GetMapping("/")
+
+    @GetMapping
+    @Operation(summary = "Get all categories", description = "Retrieve all movie categories")
     public ResponseEntity<ApiResponse<List<Category>>> getAllCategories() {
-        return ResponseEntity.ok(
-                ApiResponse.<List<Category>>builder()
-                        .success(true)
-                        .message("GET ALL CATEGORIES")
-                        .data(categoryService.findAll())
-                        .build()
-        );
+        List<Category> categories = categoryService.findAll();
+        return ResponseEntity.ok(ApiResponse.success(categories, "Categories retrieved successfully"));
     }
-    @PostMapping("/")
-    public ResponseEntity<ApiResponse<Category>> createCategory(@RequestBody @Valid Category category) {
-        // Assuming you have a method to save the category in the service
+
+    @PostMapping
+    @Operation(summary = "Create category", description = "Create a new movie category")
+    public ResponseEntity<ApiResponse<Category>> createCategory(
+            @RequestBody @Valid Category category) {
         Category savedCategory = categoryService.save(category);
-        return ResponseEntity.ok(
-                ApiResponse.<Category>builder()
-                        .success(true)
-                        .message("CATEGORY CREATED")
-                        .data(savedCategory)
-                        .build()
-        );
+        return ResponseEntity.ok(ApiResponse.success(savedCategory, "Category created successfully"));
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Category>> getCategoryById(@PathVariable Long id) {
-            return ResponseEntity.ok(
-                    ApiResponse.<Category>builder()
-                            .success(true)
-                            .message("CATEGORY WITH ID "+ id)
-                            .data(categoryService.findById(id))
-                            .build()
-            );
+    @Operation(summary = "Get category by ID", description = "Retrieve a category by its ID")
+    public ResponseEntity<ApiResponse<Category>> getCategoryById(
+            @Parameter(description = "Category ID", required = true)
+            @PathVariable Long id) {
+        Category category = categoryService.findById(id);
+        return ResponseEntity.ok(ApiResponse.success(category, "Category found"));
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Category>> updateCategory(@PathVariable Long id, @RequestBody @Valid Category category) {
-        // Assuming you have a method to update the category in the service
-        Category updatedCategory = categoryService.update(id,category);
-        return ResponseEntity.ok(
-                ApiResponse.<Category>builder()
-                        .success(true)
-                        .message("CATEGORY UPDATED WITH ID " + id)
-                        .data(updatedCategory)
-                        .build()
-        );
+    @Operation(summary = "Update category", description = "Update an existing category")
+    public ResponseEntity<ApiResponse<Category>> updateCategory(
+            @Parameter(description = "Category ID", required = true)
+            @PathVariable Long id,
+            @RequestBody @Valid Category category) {
+        Category updatedCategory = categoryService.update(id, category);
+        return ResponseEntity.ok(ApiResponse.success(updatedCategory, "Category updated successfully"));
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteCategory(@PathVariable Long id) {
+    @Operation(summary = "Delete category", description = "Delete a category by ID")
+    public ResponseEntity<ApiResponse<String>> deleteCategory(
+            @Parameter(description = "Category ID", required = true)
+            @PathVariable Long id) {
         categoryService.delete(id);
-        return ResponseEntity.ok(
-                ApiResponse.<String>builder()
-                        .success(true)
-                        .message("CATEGORY DELETED WITH ID " + id)
-                        .data("Category deleted successfully")
-                        .build()
-        );
+        return ResponseEntity.ok(ApiResponse.success("Category deleted successfully", "Category deleted"));
     }
+
     @GetMapping("/search/{name}")
-    public ResponseEntity<ApiResponse<List<Category>>> findCategoryByName(@PathVariable String name) {
-        return ResponseEntity.ok(
-                ApiResponse.<List<Category>>builder()
-                        .success(true)
-                        .message("Categories found with name " + name)
-                        .data(categoryService.findByName(name))
-                        .build()
-        );
+    @Operation(summary = "Search categories by name", description = "Find categories by name")
+    public ResponseEntity<ApiResponse<List<Category>>> findCategoryByName(
+            @Parameter(description = "Category name to search", required = true)
+            @PathVariable String name) {
+        List<Category> categories = categoryService.findByName(name);
+        return ResponseEntity.ok(ApiResponse.success(categories, "Categories found with name: " + name));
     }
 }
